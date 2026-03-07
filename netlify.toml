@@ -1,0 +1,10 @@
+# TradeSim — Netlify deploy ayarları
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Next.js API routes ve serverless için (Netlify otomatik publish ayarlar)
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

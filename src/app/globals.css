@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+
+  /* Ana renkler */
+  --bg:        #0d1117;
+  --bg1:       #161b27;
+  --bg2:       #1e2535;
+  --bg3:       #252d3d;
+
+  /* Kenarlık */
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+
+  /* Yazı */
+  --text:      #e6edf3;
+  --muted:     #8b95a5;
+  --muted2:    #586170;
+
+  /* Vurgu renkleri */
+  --green:     #22c55e;
+  --green-bg:  rgba(34,197,94,0.12);
+  --red:       #ef4444;
+  --red-bg:    rgba(239,68,68,0.12);
+  --yellow:    #f59e0b;
+  --yellow-bg: rgba(245,158,11,0.12);
+
+  /* Solana */
+  --sol:       #9945FF;
+  --sol-bg:    rgba(153,69,255,0.12);
+  --cyan:      #14F195;
+  --cyan-bg:   rgba(20,241,149,0.1);
+
+  /* Font */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  font-size: 14px;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  html { font-size: 13px; }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Subtle ambient glow — artık grid yok, sadece çok hafif gradient */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 30% at 10% 0%, rgba(153,69,255,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 20% at 90% 100%, rgba(20,241,149,0.03) 0%, transparent 50%);
+}
+
+/* Yardımcı sınıflar */
+.up   { color: var(--green); }
+.down { color: var(--red); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+.badge-up   { background: var(--green-bg); color: var(--green); }
+.badge-down { background: var(--red-bg);   color: var(--red);   }
+
+/* Kart */
+.card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border2); }
+
+/* Buton */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--cyan);
+  color: #000;
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-outline {
+  background: transparent;
+  border-color: var(--border2);
+  color: var(--muted);
+}
+.btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* Mono sayılar */
+.mono { font-family: var(--font-mono); }
+
+/* Animasyonlar */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.fade-up { animation: fadeUp 0.25s ease both; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.pulse { animation: pulse 1.8s ease infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.animate-blink { animation: blink 1.2s ease infinite; }
+
+/* Tablo satırı hover */
+.trow {
+  transition: background 0.12s;
+  cursor: pointer;
+}
+.trow:hover { background: rgba(255,255,255,0.03); }
+
+/* Touch-friendly minimum (mobil) */
+@media (pointer: coarse) {
+  .trow { min-height: 48px; }
+  button:not(.no-touch-target), .btn { min-height: 44px; }
+}
+
+/* Yatay kaydırılabilir tablo — genişlik sınırlı, içerik kayar */
+.table-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll::-webkit-scrollbar { height: 6px; }
