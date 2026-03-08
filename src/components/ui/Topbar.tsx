@@ -1,39 +1,27 @@
 'use client'
 import { useStore } from '@/lib/store'
-import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/hooks/useAuth'
 import { useEffect } from 'react'
 
-function getOrCreateDeviceId(): string {
-  try {
-    let id = localStorage.getItem('mt_device_id')
-    if (!id) { id = crypto.randomUUID(); localStorage.setItem('mt_device_id', id) }
-    return id
-  } catch { return crypto.randomUUID() }
-}
-
 export function Topbar() {
+  const { user, signOut } = useAuth()
   const { simSOL, setSimSOL, setUserId, solPrice } = useStore()
 
   useEffect(() => {
+    if (!user?.id) {
+      setUserId(null)
+      return
+    }
+    setUserId(user.id)
     const init = async () => {
-      let userId: string | null = null
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        userId = session.user.id
-      } else {
-        const { data } = await supabase.auth.signInAnonymously()
-        userId = data?.user?.id ?? null
-      }
-      if (!userId) userId = getOrCreateDeviceId()
-      setUserId(userId)
       try {
-        const res = await fetch('/api/init', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) })
+        const res = await fetch('/api/init', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: user.id }) })
         const d = await res.json()
         if (d.sim_sol !== undefined) setSimSOL(d.sim_sol)
       } catch { /* sessiz */ }
     }
     init()
-  }, [setSimSOL, setUserId])
+  }, [user?.id, setSimSOL, setUserId])
 
   return (
     <header className="sticky top-0 z-50 min-h-[52px] sm:h-14 w-full min-w-0 flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 border-b border-[var(--border)] bg-[rgba(13,17,23,0.92)] backdrop-blur-xl flex-wrap">
@@ -64,13 +52,20 @@ export function Topbar() {
         <span className="text-[9px] sm:text-[10px] text-[var(--muted)] font-medium hidden sm:inline">CANLI FİYATLAR</span>
       </div>
 
-      {/* Sağ — açıklama */}
-      <div className="ml-auto hidden lg:flex items-center gap-1.5 text-[10px] text-[var(--muted2)]">
-        <span>Gerçek fiyatlar</span>
-        <span className="text-[var(--border)]">·</span>
-        <span>Simüle portföy</span>
-        <span className="text-[var(--border)]">·</span>
-        <span>Risk yok</span>
+      {/* Kullanıcı + Çıkış */}
+      <div className="ml-auto flex items-center gap-2">
+        {user?.email && (
+          <span className="text-[10px] sm:text-[11px] text-[var(--muted)] truncate max-w-[120px] sm:max-w-[180px]" title={user.email}>
+            {user.email}
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className="px-2.5 py-1.5 rounded-lg text-[11px] font-medium border border-[var(--border2)] text-[var(--muted)] hover:border-[var(--red)] hover:text-[var(--red)] transition-colors"
+        >
+          Çıkış
+        </button>
       </div>
     </header>
   )

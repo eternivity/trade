@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS portfolio_snapshots (
 -- Simülasyon bakiyesi
 CREATE TABLE IF NOT EXISTS sim_balances (
   user_id     TEXT PRIMARY KEY,
-  sol_balance NUMERIC NOT NULL DEFAULT 1000,
+  sol_balance NUMERIC NOT NULL DEFAULT 2,
   updated_at  TIMESTAMPTZ DEFAULT now()
 );
 

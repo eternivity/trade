@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
+import { useAuth } from '@/hooks/useAuth'
 import { Topbar } from '@/components/ui/Topbar'
+import { AuthScreen } from '@/components/auth/AuthScreen'
 import { MarketPanel } from '@/components/market/MarketPanel'
 import { PortfolioPanel, HistoryPanel, AlarmsPanel } from '@/components/portfolio/PortfolioPanel'
 import { ChartView } from '@/components/chart/ChartView'
@@ -18,9 +20,22 @@ const TABS: { key: Tab; label: string; icon: string }[] = [
 ]
 
 export default function HomePage() {
+  const { isLoggedIn, loading } = useAuth()
   const [tab, setTab]           = useState<Tab>('market')
-  const [chartPair, setChartPair] = useState<TokenPair | null>(null) // chart view
-  const [tradePair, setTradePair] = useState<TokenPair | null>(null) // sadece trade modal (portföy satış)
+  const [chartPair, setChartPair] = useState<TokenPair | null>(null)
+  const [tradePair, setTradePair] = useState<TokenPair | null>(null)
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center" style={{ background: 'var(--bg)' }}>
+        <div className="w-8 h-8 rounded-full border-2 border-[var(--border2)] border-t-[var(--cyan)] animate-spin" />
+      </div>
+    )
+  }
+
+  if (!isLoggedIn) {
+    return <AuthScreen />
+  }
 
   return (
     <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden" style={{ background: 'var(--bg)' }}>

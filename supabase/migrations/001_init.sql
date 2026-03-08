@@ -10,7 +10,7 @@ create extension if not exists "uuid-ossp";
 create table public.profiles (
   id uuid references auth.users on delete cascade primary key,
   wallet_address text unique,
-  sim_sol numeric default 1000,
+  sim_sol numeric default 2,
   created_at timestamptz default now()
 );
 alter table public.profiles enable row level security;
@@ -22,7 +22,7 @@ create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id) values (new.id);
+  insert into public.profiles (id, sim_sol) values (new.id, 2);
   return new;
 end;
 $$;

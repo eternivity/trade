@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS public.profiles CASCADE;
 CREATE TABLE public.profiles (
   id          TEXT PRIMARY KEY,   -- auth user id veya device uuid
   wallet_address TEXT,
-  sim_sol     NUMERIC NOT NULL DEFAULT 1000,
+  sim_sol     NUMERIC NOT NULL DEFAULT 2,
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
